@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Net.Mail;
 using EmailHandlerAPI.DataAcessLayer;
 using System.Net;
@@ -12,24 +9,30 @@ namespace EmailHandlerAPI.BusinessLayer
     {
         public EmailMessage SendEmailMessage(EmailMessage emailMessage)
         {
-            MailAddress from = new MailAddress("MyEmailServer@localhost.ru");
+            string sender = "mymail@foo.com";
+            string password = "qwerty";
+
+            MailAddress from = new MailAddress(sender);
             MailAddress to = new MailAddress($"{emailMessage.Recipient}");
             MailMessage message = ConstructMessage(emailMessage, from, to);
 
+
             using (SmtpClient stmpClient = new SmtpClient("smtp.gmail.com", 587))
             {
-                stmpClient.Credentials = new NetworkCredential("somemail@gmail.com", "mypassword");
+                //works with proper Gmail account settings
+                stmpClient.Credentials = new NetworkCredential(sender, password); 
                 stmpClient.EnableSsl = true;
+                stmpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
 
-                try 
+                try
                 {
                     stmpClient.Send(message);
                     emailMessage.DeliveryStatus = "Success";
                 }
                 catch (Exception ex)
                 {
-                    //ex can be used for logging
-                    emailMessage.DeliveryStatus = $"Failed";
+                    //TODO: logging ex;
+                    emailMessage.DeliveryStatus = "Failed";
                 }
 
                 return emailMessage;
@@ -43,6 +46,12 @@ namespace EmailHandlerAPI.BusinessLayer
             mailMessage.Subject = emailMessage.Subject;
             mailMessage.Body = emailMessage.Body;
             mailMessage.IsBodyHtml = false;
+
+            foreach (var item in emailMessage.Carbon_copy_recipients)
+            {
+                mailMessage.CC.Add(item);
+            }
+
             return mailMessage;
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using EmailHandlerAPI.DataAcessLayer;
 
@@ -26,15 +25,6 @@ namespace EmailHandlerAPI.BusinessLayer
             message.Date = DateTime.Now;
             using (DBAcessHandler DBAcessContext = new DBAcessHandler())
             {
-                //var Email = new EmailMessage 
-                //{ 
-                //    Subject = message.Subject, 
-                //    Body = message.Text, 
-                //    Recipient = message.Recipient,
-                //    Carbon_copy_recipients = message.Carbon_copy_recipients.ToList(), 
-                //    Date = DateTime.Now 
-                //};
-
                 DBAcessContext.Add(message);
                 DBAcessContext.SaveChanges();
                 return message;

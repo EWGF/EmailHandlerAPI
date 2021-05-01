@@ -10,7 +10,7 @@ namespace EmailHandlerAPI.Controllers
     [Route("v1/api/[controller]")]
     public class EmailsController : ControllerBase
     {
-        //TODO: Should me made as Dependency Injection without creating new instances :(
+        //TODO: Should be made throught Dependency Injection without creating the new instances :(
         private readonly IDBAcessHandler _dbHandler = new DBAcessHandler();
         private readonly IEmailSender _emailSender = new EmailSender();
 
@@ -23,10 +23,10 @@ namespace EmailHandlerAPI.Controllers
         }
 
         [HttpPost]
-        public void Post([FromBody] EmailMessage message)
+        public EmailMessage Post([FromBody] EmailMessage message)
         {
-            var msg = _emailSender.SendEmailMessage(message);
-            _dbHandler.AddEmails(msg);
+            message = _emailSender.SendEmailMessage(message);
+            return _dbHandler.AddEmails(message);
         }
 
     }
