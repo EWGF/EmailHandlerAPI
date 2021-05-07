@@ -10,9 +10,14 @@ namespace EmailHandlerAPI.Controllers
     [Route("v1/api/[controller]")]
     public class EmailsController : ControllerBase
     {
-        //TODO: Should be made throught Dependency Injection without creating the new instances :(
-        private readonly IDBAcessHandler _dbHandler = new DBAcessHandler();
-        private readonly IEmailSender _emailSender = new EmailSender();
+        private readonly IDBAcessHandler _dbHandler;
+        private readonly IEmailSender _emailSender;
+
+        public EmailsController(IDBAcessHandler dbHandler, IEmailSender emailSender)
+        {
+            _dbHandler = dbHandler;
+            _emailSender = emailSender;
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<EmailMessage>> Get() 
